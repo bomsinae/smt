@@ -31,8 +31,8 @@ public class ServerListActivity extends Activity {
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
-			TextView select_item = (TextView) view;
-			Toast.makeText(ServerListActivity.this, select_item.getText(), 1000).show();
+			ListItem select_item = (ListItem) adapter.getItem(position);
+			Toast.makeText(ServerListActivity.this, select_item.getName(), 1000).show();
 		}
 	};
 
@@ -94,9 +94,8 @@ public class ServerListActivity extends Activity {
 			}
     		
     		list.setAdapter(adapter);
-    		Log.e("TEST", "TESTTEST");
-//    		list.setTextFilterEnabled(true);
-//    		list.setOnItemClickListener(item_listener);
+    		list.setTextFilterEnabled(true);
+    		list.setOnItemClickListener(item_listener);
             
     	}
     	
