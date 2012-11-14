@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">SMT</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">smt</string>
+    <string name="server_list">Server List</string>
+    <string name="manager_list">Manager List</string>
+    <string name="monitor_log">Monitor Log</string>
+    <string name="alert_log">Alert Log</string>
+
+</resources>

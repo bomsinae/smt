@@ -1,0 +1,33 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nsoll.smt"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity 
+            android:name="ServerListActivity" 
+            android:label="@string/server_list">
+        </activity>
+        <activity android:name="ManagerListActivity" android:label="@string/manager_list"></activity>
+        <activity android:name="MonitorLogActivity" android:label="@string/monitor_log"></activity>
+        <activity android:label="@string/alert_log" android:name="AlertLogActivity"></activity>
+    </application>
+
+</manifest>
