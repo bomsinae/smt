@@ -78,7 +78,7 @@ public class ManagerListActivity extends Activity {
 				JSONArray jArr = new JSONArray(jsonObject.getString("manager_list"));
 				manager_list = new String[jArr.length()];
 				for (int i=0; i < jArr.length(); i++) {
-					manager_list[i] = jArr.getString(i);
+					manager_list[i] = jArr.getJSONObject(i).getString("userid");
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

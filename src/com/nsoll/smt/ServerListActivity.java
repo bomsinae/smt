@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +26,7 @@ public class ServerListActivity extends Activity {
 
 	Request task;
 	ListView list;
+	SmtAdapter adapter = new SmtAdapter(this);
 	
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -74,23 +74,29 @@ public class ServerListActivity extends Activity {
  		@Override
     	protected void onPostExecute(String result){
     		JSONObject jsonObject;
-    		String[] server_list = null;
+    		String name = null;
+    		String subname = null;
+    		String regdate = null;
     		
     		try {
 				jsonObject = new JSONObject(result);
 				JSONArray jArr = new JSONArray(jsonObject.getString("server_list"));
-				server_list = new String[jArr.length()];
 				for (int i=0; i < jArr.length(); i++) {
-					server_list[i] = jArr.getString(i);
+					name = jArr.getJSONObject(i).getString("ip");
+					//subname = jArr.getJSONObject(i).getString("subname");
+					regdate = jArr.getJSONObject(i).getString("regdate");
+					Log.e("TEST", name + " " + subname + " " + regdate);
+					adapter.add(new ListItem(name, subname, regdate));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-       		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ServerListActivity.this, R.layout.list_layout, server_list);
-       		list.setAdapter(adapter);
-    		list.setTextFilterEnabled(true);
-    		list.setOnItemClickListener(item_listener);
+    		
+    		list.setAdapter(adapter);
+    		Log.e("TEST", "TESTTEST");
+//    		list.setTextFilterEnabled(true);
+//    		list.setOnItemClickListener(item_listener);
             
     	}
     	
