@@ -24,10 +24,23 @@ public class MainActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
 			TextView select_item = (TextView) view;
-			Toast.makeText(MainActivity.this, select_item.getText(), 1000).show();
-			
-			Intent intent = new Intent(getBaseContext(), ServerListActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			if (select_item.getText() == "Server List"){
+				Intent intent = new Intent(getBaseContext(), ServerListActivity.class);
+	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			} 
+			else if (select_item.getText() == "Manager List"){
+				Intent intent = new Intent(getBaseContext(), ManagerListActivity.class);
+	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			}
+			else if (select_item.getText() == "Monitor Log"){
+				Intent intent = new Intent(getBaseContext(), MonitorLogActivity.class);
+	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			}
+			else if (select_item.getText() == "Alert Log"){
+				Intent intent = new Intent(getBaseContext(), AlertLogActivity.class);
+	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			}
+
 		}
 	};
 	
