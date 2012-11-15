@@ -16,8 +16,6 @@ public class MainActivity extends Activity {
 	ListView list;
 	MainMenuAdapter adapter = new MainMenuAdapter(this);
 	
-	String[] menulist = {"Server List", "Manager List", "Monitor Log", "Alert Log"};
-	
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
