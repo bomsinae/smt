@@ -8,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-public class SmtAdapter extends BaseAdapter {
+public class LogAdapter extends BaseAdapter {
 	
 	private Context m_context;
 	
-	private List<ListItem> m_items = new ArrayList<ListItem>();
+	private List<LogItem> m_items = new ArrayList<LogItem>();
 	
-	public SmtAdapter(Context context) {
+	public LogAdapter(Context context) {
 		m_context = context;
 	}
 	
-	public void add(ListItem data) {
+	public void add(LogItem data) {
 		m_items.add(data);
 		//notifyDataSetChanged();
 	}
@@ -36,15 +36,15 @@ public class SmtAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ItemView itemView;
+		LogItemView itemView;
 		if (convertView == null) {
-			itemView = new ItemView(m_context, m_items.get(position));
+			itemView = new LogItemView(m_context, m_items.get(position));
 		} else {
-			itemView = (ItemView) convertView;
+			itemView = (LogItemView) convertView;
 			
-			itemView.setName(m_items.get(position).getName());
-			itemView.setSubname(m_items.get(position).getSubname());
-			itemView.setRegdate(m_items.get(position).getRegdate());
+			itemView.setIp(m_items.get(position).getIp());
+			itemView.setLogtime(m_items.get(position).getLogtime());
+			itemView.setMsg(m_items.get(position).getMsg());
 		}
 		return itemView;
 	}

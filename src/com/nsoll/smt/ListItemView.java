@@ -6,13 +6,13 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ItemView extends LinearLayout {
+public class ListItemView extends LinearLayout {
 
 	private TextView m_name;
 	private TextView m_subname;
 	private TextView m_regdate;
 	
-	public ItemView(Context context, ListItem items) {
+	public ListItemView(Context context, ListItem items) {
 		super(context);
 		
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

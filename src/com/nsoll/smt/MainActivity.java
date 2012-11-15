@@ -6,54 +6,43 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	public static final int REQUEST_CODE_ANOTHER = 1001;
+	ListView list;
+	
+	String[] menulist = {"Server List", "Manager List", "Monitor Log", "Alert Log"};
+	
+	private OnItemClickListener item_listener = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+		{
+			TextView select_item = (TextView) view;
+			Toast.makeText(MainActivity.this, select_item.getText(), 1000).show();
+			
+			Intent intent = new Intent(getBaseContext(), ServerListActivity.class);
+    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		}
+	};
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        Button serverList = (Button) findViewById(R.id.serverList);
-        Button managerList = (Button) findViewById(R.id.managerList);
-        Button monitorLog = (Button) findViewById(R.id.monitorLog);
-        Button alertLog = (Button) findViewById(R.id.alertLog);
+        list = (ListView) findViewById(R.id.mainList);
         
-        //Server List
-        serverList.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		Intent intent = new Intent(getBaseContext(), ServerListActivity.class);
-        		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-        		
-        	}
-        });
-        
-        // Manager List
-        managerList.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		Intent intent = new Intent(getBaseContext(), ManagerListActivity.class);
-        		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-        	}
-        });
-        
-        // Monitor Log
-        monitorLog.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		Intent intent = new Intent(getBaseContext(), MonitorLogActivity.class);
-        		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-        	}
-        });
-        
-        // Alert Log
-        alertLog.setOnClickListener(new OnClickListener() {
-        	public void onClick(View v) {
-        		Intent intent = new Intent(getBaseContext(), AlertLogActivity.class);
-        		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-        	}
-        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, menulist);
+        list.setAdapter(adapter);
+        list.setTextFilterEnabled(true);
+		list.setOnItemClickListener(item_listener);
+
     }
 
     @Override

@@ -27,12 +27,13 @@ public class ManagerListActivity extends Activity {
 
 	Request task;
 	ListView list;
+	ListAdapter adapter = new ListAdapter(this);
 	
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
-			TextView select_item = (TextView) view;
-			Toast.makeText(ManagerListActivity.this, select_item.getText(), 1000).show();
+			ListItem select_item = (ListItem) adapter.getItem(position);
+			Toast.makeText(ManagerListActivity.this, select_item.getName(), 1000).show();
 		}
 	};
 	
@@ -71,20 +72,24 @@ public class ManagerListActivity extends Activity {
     	@Override
     	protected void onPostExecute(String result){
     		JSONObject jsonObject;
-    		String[] manager_list = null;
+    		String name = null;
+    		String subname = null;
+    		String regdate = null;
     		
     		try {
 				jsonObject = new JSONObject(result);
 				JSONArray jArr = new JSONArray(jsonObject.getString("manager_list"));
-				manager_list = new String[jArr.length()];
 				for (int i=0; i < jArr.length(); i++) {
-					manager_list[i] = jArr.getJSONObject(i).getString("userid");
+					name = jArr.getJSONObject(i).getString("userid");
+					subname = jArr.getJSONObject(i).getString("name");
+					regdate = jArr.getJSONObject(i).getString("regdate");
+					adapter.add(new ListItem(name, subname, regdate));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-       		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ManagerListActivity.this, R.layout.list_layout, manager_list);
+       		
        		list.setAdapter(adapter);
     		list.setTextFilterEnabled(true);
     		list.setOnItemClickListener(item_listener);

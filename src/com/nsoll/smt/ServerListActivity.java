@@ -26,7 +26,7 @@ public class ServerListActivity extends Activity {
 
 	Request task;
 	ListView list;
-	SmtAdapter adapter = new SmtAdapter(this);
+	ListAdapter adapter = new ListAdapter(this);
 	
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -85,7 +85,6 @@ public class ServerListActivity extends Activity {
 					name = jArr.getJSONObject(i).getString("ip");
 					//subname = jArr.getJSONObject(i).getString("subname");
 					regdate = jArr.getJSONObject(i).getString("regdate");
-					Log.e("TEST", name + " " + subname + " " + regdate);
 					adapter.add(new ListItem(name, subname, regdate));
 				}
 			} catch (JSONException e) {
