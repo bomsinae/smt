@@ -12,24 +12,21 @@ public class LogItemView extends LinearLayout {
 	private TextView m_logtime;
 	private TextView m_msg;
 	
-	public LogItemView(Context context, LogItem items) {
+	public LogItemView(Context context, LogItem item) {
 		super(context);
 		
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate(R.layout.log_item, this, true);
+		inflater.inflate(R.layout.item_log, this, true);
 		
 		m_ip = (TextView) findViewById(R.id.ipView);
-		m_ip.setText(items.getIp());
+		m_ip.setText(item.getIp());
 		
 		m_logtime = (TextView) findViewById(R.id.logtimeView);
-		m_logtime.setText(items.getLogtime());
+		m_logtime.setText(item.getLogtime());
 		
 		m_msg = (TextView) findViewById(R.id.msgView);
-		m_msg.setText(items.getMsg());
-		
-		
-		
-	}
+		m_msg.setText(item.getMsg());
+		}
 	
 	
 	public void setIp(String ip) {

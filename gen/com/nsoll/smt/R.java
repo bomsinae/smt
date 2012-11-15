@@ -19,9 +19,11 @@ public final class R {
         public static final int alertLog=0x7f070000;
         public static final int ipView=0x7f070009;
         public static final int logtimeView=0x7f07000a;
+        public static final int mainHead=0x7f07000c;
         public static final int mainList=0x7f070002;
+        public static final int mainMenu=0x7f07000d;
         public static final int managerList=0x7f070003;
-        public static final int menu_settings=0x7f07000c;
+        public static final int menu_settings=0x7f07000e;
         public static final int monitorLog=0x7f070004;
         public static final int msgView=0x7f07000b;
         public static final int nameView=0x7f070006;
@@ -35,8 +37,9 @@ public final class R {
         public static final int activity_managerlist=0x7f030002;
         public static final int activity_monitorlog=0x7f030003;
         public static final int activity_serverlist=0x7f030004;
-        public static final int list_item=0x7f030005;
-        public static final int log_item=0x7f030006;
+        public static final int item_list=0x7f030005;
+        public static final int item_log=0x7f030006;
+        public static final int item_main=0x7f030007;
     }
     public static final class menu {
         public static final int activity_main=0x7f060000;

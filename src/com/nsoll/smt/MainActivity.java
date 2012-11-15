@@ -5,38 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
 	public static final int REQUEST_CODE_ANOTHER = 1001;
 	ListView list;
+	MainMenuAdapter adapter = new MainMenuAdapter(this);
 	
 	String[] menulist = {"Server List", "Manager List", "Monitor Log", "Alert Log"};
 	
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
-			TextView select_item = (TextView) view;
-			if (select_item.getText() == "Server List"){
+			MainItem select_item = (MainItem) adapter.getItem(position);
+			if (select_item.getMenu() == "Server List"){
 				Intent intent = new Intent(getBaseContext(), ServerListActivity.class);
 	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 			} 
-			else if (select_item.getText() == "Manager List"){
+			else if (select_item.getMenu() == "Manager List"){
 				Intent intent = new Intent(getBaseContext(), ManagerListActivity.class);
 	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 			}
-			else if (select_item.getText() == "Monitor Log"){
+			else if (select_item.getMenu() == "Monitor Log"){
 				Intent intent = new Intent(getBaseContext(), MonitorLogActivity.class);
 	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 			}
-			else if (select_item.getText() == "Alert Log"){
+			else if (select_item.getMenu() == "Alert Log"){
 				Intent intent = new Intent(getBaseContext(), AlertLogActivity.class);
 	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 			}
@@ -51,7 +49,11 @@ public class MainActivity extends Activity {
         
         list = (ListView) findViewById(R.id.mainList);
         
-        ArrayAdapter<String> adapter = new ArrayAdapter<String> (this, android.R.layout.simple_list_item_1, menulist);
+        adapter.add(new MainItem(0xff8EC7D0, "Server List"));
+        adapter.add(new MainItem(0xff467F88, "Manager List"));
+        adapter.add(new MainItem(0xff8EC7D0, "Monitor Log"));
+        adapter.add(new MainItem(0xff467F88, "Alert Log"));
+        
         list.setAdapter(adapter);
         list.setTextFilterEnabled(true);
 		list.setOnItemClickListener(item_listener);
