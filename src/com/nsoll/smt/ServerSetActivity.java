@@ -1,4 +1,3 @@
-
 package com.nsoll.smt;
 
 import org.apache.http.HttpEntity;
@@ -7,7 +6,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,38 +21,37 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ServerListActivity extends Activity {
-
-	public static final int REQUEST_CODE_ANOTHER = 1001;
+public class ServerSetActivity extends Activity {
+	
 	Request task;
 	ListView list;
-	ListAdapter adapter = new ListAdapter(this);
-	
+	SetAdapter adapter = new SetAdapter(this);
+
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
-			ListItem select_item = (ListItem) adapter.getItem(position);
-			Intent intent = new Intent(getBaseContext(), ServerSetActivity.class);
-			intent.putExtra("ip", select_item.getName());
-			startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-			
+			SetItem select_item = (SetItem) adapter.getItem(position);
+			Toast.makeText(ServerSetActivity.this, select_item.getCheckname(), 1000).show();
 		}
 	};
-
+	
     public void onCreate(Bundle savedInstanceState) {
-    	
-    	
+    	   	
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_serverlist);
+        setContentView(R.layout.activity_serverset);
         
-        list = (ListView)findViewById(R.id.serverList);
+        Intent receivedIntent = getIntent();
+        String ip = receivedIntent.getStringExtra("ip");
+        String url = "http://smt.nsoll.com/m/serverset.smt?ip=" + ip;
+        
+        list = (ListView)findViewById(R.id.serversetList);
         task = new Request();
-        task.execute("http://smt.nsoll.com/m/serverlist.smt");
- 
+        task.execute(url);
+
         
     }
-    
+       
     class Request extends AsyncTask<String, Void, String> {
     	StringBuilder output = new StringBuilder();
     	@Override
@@ -79,32 +76,40 @@ public class ServerListActivity extends Activity {
  		@Override
     	protected void onPostExecute(String result){
     		JSONObject jsonObject;
-    		String name = null;
-    		String subname = null;
-    		String regdate = null;
     		
     		try {
 				jsonObject = new JSONObject(result);
-				JSONArray jArr = new JSONArray(jsonObject.getString("server_list"));
-				for (int i=0; i < jArr.length(); i++) {
-					name = jArr.getJSONObject(i).getString("ip");
-					//subname = jArr.getJSONObject(i).getString("subname");
-					regdate = jArr.getJSONObject(i).getString("regdate");
-					adapter.add(new ListItem(name, subname, regdate));
-				}
+				JSONObject json_checkList = new JSONObject(jsonObject.getString("check_list"));
+		
+				adapter.add(new SetItem("Ping", json_checkList.getBoolean("ping_check")));
+				adapter.add(new SetItem("Port", json_checkList.getBoolean("port_check")));
+				adapter.add(new SetItem("URL", json_checkList.getBoolean("url_check")));
+				adapter.add(new SetItem("Disk Used", json_checkList.getBoolean("diskusage_check")));
+				adapter.add(new SetItem("Disk Status", json_checkList.getBoolean("diskstatus_check")));
+				adapter.add(new SetItem("Server Load", json_checkList.getBoolean("serverload_check")));
+				adapter.add(new SetItem("Process Count", json_checkList.getBoolean("processcount_check")));
+				adapter.add(new SetItem("Firewall", json_checkList.getBoolean("firewall_check")));
+				adapter.add(new SetItem("Login Session", json_checkList.getBoolean("loginsession_check")));
+				adapter.add(new SetItem("Listen Port", json_checkList.getBoolean("listenport_check")));
+				adapter.add(new SetItem("Logfile", json_checkList.getBoolean("logfile_check")));
+				adapter.add(new SetItem("Process Exceute", json_checkList.getBoolean("processexec_check")));
+				adapter.add(new SetItem("tmp directory", json_checkList.getBoolean("tmp_check")));
+				adapter.add(new SetItem("Traffic", json_checkList.getBoolean("traffic_check")));
+				
+				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     		
     		list.setAdapter(adapter);
-    		list.setTextFilterEnabled(true);
+    	//	list.setTextFilterEnabled(true);
     		list.setOnItemClickListener(item_listener);
             
     	}
     	
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
