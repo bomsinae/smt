@@ -8,5 +8,6 @@
     <string name="manager_list">Manager List</string>
     <string name="monitor_log">Monitor Log</string>
     <string name="alert_log">Alert Log</string>
+    <string name="server_set">Server Set</string>
 
 </resources>
