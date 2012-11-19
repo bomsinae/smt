@@ -17,22 +17,24 @@ public final class R {
     public static final class id {
         public static final int LinearLayout1=0x7f070001;
         public static final int alertLog=0x7f070000;
-        public static final int check=0x7f070010;
-        public static final int checkName=0x7f07000f;
-        public static final int ipView=0x7f07000a;
-        public static final int logtimeView=0x7f07000b;
-        public static final int mainHead=0x7f07000d;
+        public static final int check=0x7f070012;
+        public static final int checkName=0x7f070011;
+        public static final int ipView=0x7f07000c;
+        public static final int logtimeView=0x7f07000d;
+        public static final int mainHead=0x7f07000f;
         public static final int mainList=0x7f070002;
-        public static final int mainMenu=0x7f07000e;
+        public static final int mainMenu=0x7f070010;
         public static final int managerList=0x7f070003;
-        public static final int menu_settings=0x7f070011;
+        public static final int menu_settings=0x7f070013;
         public static final int monitorLog=0x7f070004;
-        public static final int msgView=0x7f07000c;
-        public static final int nameView=0x7f070007;
-        public static final int regdateView=0x7f070009;
+        public static final int msgView=0x7f07000e;
+        public static final int nameView=0x7f070009;
+        public static final int regdateView=0x7f07000b;
         public static final int serverList=0x7f070005;
-        public static final int serversetList=0x7f070006;
-        public static final int subnameView=0x7f070008;
+        public static final int serversetList=0x7f070008;
+        public static final int serversetSave=0x7f070007;
+        public static final int serversetSubject=0x7f070006;
+        public static final int subnameView=0x7f07000a;
     }
     public static final class layout {
         public static final int activity_alertlog=0x7f030000;
@@ -56,6 +58,7 @@ public final class R {
         public static final int manager_list=0x7f040005;
         public static final int menu_settings=0x7f040002;
         public static final int monitor_log=0x7f040006;
+        public static final int save=0x7f040009;
         public static final int server_list=0x7f040004;
         public static final int server_set=0x7f040008;
         public static final int title_activity_main=0x7f040003;

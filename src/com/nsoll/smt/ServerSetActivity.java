@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ServerSetActivity extends Activity {
@@ -49,6 +50,10 @@ public class ServerSetActivity extends Activity {
         task = new Request();
         task.execute(url);
 
+        String subject = ip + " setting";
+        TextView subjectView = (TextView) findViewById(R.id.serversetSubject);
+        subjectView.setText(subject);
+        
         
     }
        

@@ -3,6 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp" >
+        <TextView
+            android:id="@+id/serversetSubject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
+        <Button
+            android:id="@+id/serversetSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:minHeight="36dip"
+            android:minWidth="48dip"
+            android:text="@string/save" />
+    </RelativeLayout>
     <ListView
         android:id="@+id/serversetList"
         android:layout_width="match_parent"
