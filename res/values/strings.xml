@@ -10,5 +10,6 @@
     <string name="alert_log">Alert Log</string>
     <string name="server_set">Server Set</string>
     <string name="save">Save</string>
+    <string name="manager_set">Manager Set</string>
 
 </resources>

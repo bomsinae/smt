@@ -79,6 +79,7 @@ public class ServerListActivity extends Activity {
  		@Override
     	protected void onPostExecute(String result){
     		JSONObject jsonObject;
+    		Integer no = 0;
     		String name = null;
     		String subname = null;
     		String regdate = null;
@@ -88,9 +89,8 @@ public class ServerListActivity extends Activity {
 				JSONArray jArr = new JSONArray(jsonObject.getString("server_list"));
 				for (int i=0; i < jArr.length(); i++) {
 					name = jArr.getJSONObject(i).getString("ip");
-					//subname = jArr.getJSONObject(i).getString("subname");
 					regdate = jArr.getJSONObject(i).getString("regdate");
-					adapter.add(new ListItem(name, subname, regdate));
+					adapter.add(new ListItem(no, name, subname, regdate));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

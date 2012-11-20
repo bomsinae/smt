@@ -16,46 +16,70 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ServerSetActivity extends Activity {
+public class ManagerSetActivity extends Activity {
 	
 	Request task;
 	ListView list;
 	SetAdapter adapter = new SetAdapter(this);
-		
 
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
 			SetItem select_item = (SetItem) adapter.getItem(position);
-			Toast.makeText(ServerSetActivity.this, select_item.getCheckname(), 1000).show();
+			Toast.makeText(ManagerSetActivity.this, select_item.getCheckname(), 1000).show();
 		}
 	};
-	
 	
     public void onCreate(Bundle savedInstanceState) {
     	   	
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_serverset);
+        setContentView(R.layout.activity_managerset);
         
         Intent receivedIntent = getIntent();
-        String ip = receivedIntent.getStringExtra("ip");
-        String url = "http://smt.nsoll.com/m/serverset.smt?ip=" + ip;
+        Integer no = receivedIntent.getIntExtra("no", 0);
+        String name = receivedIntent.getStringExtra("name");
         
-        list = (ListView)findViewById(R.id.serversetList);
+        String url = "http://smt.nsoll.com/m/managerset.smt?no=" + Integer.toString(no);
+        
+        list = (ListView)findViewById(R.id.managersetList);
         task = new Request();
         task.execute(url);
 
-        //
-        String subject = ip + " setting";
-        TextView subjectView = (TextView) findViewById(R.id.serversetSubject);
+        // view subject
+        String subject = name + " setting";
+        TextView subjectView = (TextView) findViewById(R.id.managersetSubject);
         subjectView.setText(subject);
+        
+        // save button
+        Button saveBtn = (Button) findViewById(R.id.managersetSave);        
+        saveBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+		        final Integer itemCount = adapter.getCount();
+		        SetItem select_item = (SetItem) adapter.getItem(2);
+		        Boolean m_checked = select_item.getCheck();		        /*
+		        for(Integer i=0; i<itemCount; i++ ){
+		        	select_item = (SetItem) adapter.getItem(i);
+			        String m_checkname;
+			        Boolean m_checked;
+		        	m_checkname = select_item.getCheckname();
+		        	m_checked = select_item.getCheck();
+		        	
+		        }
+		        */
+				Toast.makeText(getApplicationContext(), Boolean.toString(m_checked), 1000).show();
+			}
+        	
+        });
+        
         
     }
        
@@ -88,20 +112,10 @@ public class ServerSetActivity extends Activity {
 				jsonObject = new JSONObject(result);
 				JSONObject json_checkList = new JSONObject(jsonObject.getString("check_list"));
 		
-				adapter.add(new SetItem("Ping", json_checkList.getBoolean("ping_check")));
-				adapter.add(new SetItem("Port", json_checkList.getBoolean("port_check")));
-				adapter.add(new SetItem("URL", json_checkList.getBoolean("url_check")));
-				adapter.add(new SetItem("Disk Used", json_checkList.getBoolean("diskusage_check")));
-				adapter.add(new SetItem("Disk Status", json_checkList.getBoolean("diskstatus_check")));
-				adapter.add(new SetItem("Server Load", json_checkList.getBoolean("serverload_check")));
-				adapter.add(new SetItem("Process Count", json_checkList.getBoolean("processcount_check")));
-				adapter.add(new SetItem("Firewall", json_checkList.getBoolean("firewall_check")));
-				adapter.add(new SetItem("Login Session", json_checkList.getBoolean("loginsession_check")));
-				adapter.add(new SetItem("Listen Port", json_checkList.getBoolean("listenport_check")));
-				adapter.add(new SetItem("Logfile", json_checkList.getBoolean("logfile_check")));
-				adapter.add(new SetItem("Process Exceute", json_checkList.getBoolean("processexec_check")));
-				adapter.add(new SetItem("tmp directory", json_checkList.getBoolean("tmp_check")));
-				adapter.add(new SetItem("Traffic", json_checkList.getBoolean("traffic_check")));
+				adapter.add(new SetItem("SMS", json_checkList.getBoolean("sms")));
+				adapter.add(new SetItem("Push", json_checkList.getBoolean("push")));
+				adapter.add(new SetItem("MyPeople", json_checkList.getBoolean("mypeople")));
+				
 				
 				
 			} catch (JSONException e) {
@@ -112,7 +126,7 @@ public class ServerSetActivity extends Activity {
     		list.setAdapter(adapter);
     	//	list.setTextFilterEnabled(true);
     		list.setOnItemClickListener(item_listener);
-            
+    		
     	}
     	
     }
