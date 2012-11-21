@@ -42,26 +42,29 @@ public class SetAdapter extends BaseAdapter {
 		SetItemView itemView;
 		if (convertView == null) {
 			itemView = new SetItemView(m_context, m_items.get(position));
-			Log.e("TEST", "viewtest");
+			//Log.e("SetAdapter", "first getView call");
 		} else {
 			itemView = (SetItemView) convertView;
 			
 			itemView.setCheckname(m_items.get(position).getCheckname());
-			//itemView.setCheck(itemView.isChecked());
-			//m_items.get(position).setCheck(((ListView) parent).isItemChecked(position));
 			itemView.setCheck(m_items.get(position).getCheck());
-			//itemView.setCheck(((ListView) parent).isItemChecked(position));
 			
-			CheckBox cb = (CheckBox) itemView.findViewById(R.id.check);
-			final Integer arg = position;
-			cb.setOnClickListener(new OnClickListener(){
-				public void onClick(View v){
-					m_items.get(arg).setCheck(!m_items.get(arg).getCheck());	
-				}
-			});
-			
-			
+			/* test code
+			itemView.setCheck(itemView.isChecked());
+			m_items.get(position).setCheck(((ListView) parent).isItemChecked(position));
+			itemView.setCheck(((ListView) parent).isItemChecked(position));
+			*/
 		}
+		
+		CheckBox cb = (CheckBox) itemView.findViewById(R.id.check);
+		final Integer arg = position;
+		cb.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				m_items.get(arg).setCheck(!m_items.get(arg).getCheck());
+				Log.e("SetAdapter checkbox clieck", m_items.get(arg).getCheckname());
+			}
+		});
+			
 		return itemView;
 	}
 	

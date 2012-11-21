@@ -27,6 +27,7 @@ public class AlertLogActivity extends Activity{
 	ListView list;
 	LogAdapter adapter = new LogAdapter(this);
 	
+	/*
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position,long id)
 		{
@@ -34,6 +35,7 @@ public class AlertLogActivity extends Activity{
 			Toast.makeText(AlertLogActivity.this, select_item.getIp(), 1000).show();
 		}
 	};
+	*/
 	
     public void onCreate(Bundle savedInstanceState) {
     	
@@ -90,7 +92,7 @@ public class AlertLogActivity extends Activity{
 			}
     		
     		list.setAdapter(adapter);
-    		list.setTextFilterEnabled(true);
+    		//list.setTextFilterEnabled(true);
     		//list.setOnItemClickListener(item_listener);
     	}
     	

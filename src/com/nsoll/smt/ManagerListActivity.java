@@ -18,12 +18,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class ManagerListActivity extends Activity {
 
-	public static final int REQUEST_CODE_ANOTHER = 1001;
+	public static final int REQUEST_CODE_ANOTHER = 1201;
 	Request task;
 	ListView list;
 	ListAdapter adapter = new ListAdapter(this);

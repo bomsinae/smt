@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 public class ServerListActivity extends Activity {
 
-	public static final int REQUEST_CODE_ANOTHER = 1001;
+	public static final int REQUEST_CODE_ANOTHER = 1101;
 	Request task;
 	ListView list;
 	ListAdapter adapter = new ListAdapter(this);
@@ -54,7 +54,7 @@ public class ServerListActivity extends Activity {
  
         
     }
-    
+
     class Request extends AsyncTask<String, Void, String> {
     	StringBuilder output = new StringBuilder();
     	@Override
@@ -98,7 +98,7 @@ public class ServerListActivity extends Activity {
 			}
     		
     		list.setAdapter(adapter);
-    		list.setTextFilterEnabled(true);
+    		//list.setTextFilterEnabled(true);
     		list.setOnItemClickListener(item_listener);
             
     	}
