@@ -1,12 +1,14 @@
 package com.nsoll.smt;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -20,6 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +36,10 @@ public class LoginActivity extends Activity {
 	private Button loginBtn;
 	private TextView loginResultView;
 	private PostRequest postTask;
+	
+	public static HttpClient client = new DefaultHttpClient();
+	public static Cookie cookie = null;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +76,6 @@ public class LoginActivity extends Activity {
 		@Override
 		protected String doInBackground(ArrayList<BasicNameValuePair>... params) {
 			try {
-		        HttpClient client = new DefaultHttpClient();
 		        //get url and remove from params
 		        String postUrl = params[0].remove(0).getValue();
 		        HttpPost post = new HttpPost(postUrl);
@@ -93,20 +100,30 @@ public class LoginActivity extends Activity {
     		try {
 				jsonObject = new JSONObject(result);
 				b_result = jsonObject.getBoolean("result");
-
-				if (b_result){
-	    			String obj = jsonObject.getString("obj");
-	    			response = "Set Complete : " + obj;
-	    		} else {
-	    			response = "Set Error.";
-	    		}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-    		Log.e("response", Boolean.toString(b_result));
     		
-    		Toast.makeText(getBaseContext(), response, 1000).show();
-			finish();
+    		String domain = getString(R.string.domain);
+			List<Cookie> cookies =((DefaultHttpClient)client).getCookieStore().getCookies();
+    		if (b_result && !cookies.isEmpty()){ // 로그인 성공
+				CookieManager cookieManager = CookieManager.getInstance();
+				CookieSyncManager.createInstance(getApplicationContext());
+				cookieManager.setAcceptCookie(true);
+				for (int i=0; i<cookies.size(); i++) {
+					String cookieString = cookies.get(i).getName() + "="+ cookies.get(i).getValue();
+					cookieManager.setCookie(domain, cookieString);
+					cookieManager.setAcceptCookie(true);
+					Log.e("cookie test : ", cookieString);
+				}
+				finish();
+    		} else { // 로그인 실패시
+    			passwordEdit.setText("");
+    			loginResultView.setText("Login incorrect. Try again.");
+    		}
+    		Log.e("response", Boolean.toString(b_result));
+    		    		
+			
 		}
     }
 }

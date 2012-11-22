@@ -70,6 +70,7 @@ public final class R {
     public static final class string {
         public static final int alert_log=0x7f040007;
         public static final int app_name=0x7f040000;
+        public static final int domain=0x7f04000e;
         public static final int hello_world=0x7f040001;
         public static final int login=0x7f04000b;
         public static final int manager_list=0x7f040005;

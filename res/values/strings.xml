@@ -14,5 +14,6 @@
     <string name="login">LOGIN</string>
     <string name="managerid">Manager ID : </string>
     <string name="password">Password : </string>
+    <string name="domain">http://smt.nsoll.com</string>
 
 </resources>
