@@ -2,7 +2,7 @@
 
     <string name="app_name">SMT</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_login">Login</string>
     <string name="title_activity_main">smt</string>
     <string name="server_list">Server List</string>
     <string name="manager_list">Manager List</string>
@@ -11,5 +11,8 @@
     <string name="server_set">Server Set</string>
     <string name="save">Save</string>
     <string name="manager_set">Manager Set</string>
+    <string name="login">LOGIN</string>
+    <string name="managerid">Manager ID : </string>
+    <string name="password">Password : </string>
 
 </resources>

@@ -30,6 +30,7 @@
         <activity android:label="@string/server_set" android:name="AlertLogActivity"></activity>
         <activity android:name="ServerSetActivity" android:label="@string/server_set"></activity>
         <activity android:label="@string/manager_set" android:name="ManagerSetActivity"></activity>
+        <activity android:label="@string/login" android:name="LoginActivity"></activity>
     </application>
 
 </manifest>
