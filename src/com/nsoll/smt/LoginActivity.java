@@ -27,7 +27,8 @@ import android.webkit.CookieSyncManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.gcm.GCMRegistrar;
 
 public class LoginActivity extends Activity {
 	
@@ -50,7 +51,16 @@ public class LoginActivity extends Activity {
 		passwordEdit = (EditText) findViewById(R.id.passwordEdit);
 		loginBtn = (Button) findViewById(R.id.loginBtn);
 		loginResultView = (TextView) findViewById(R.id.loginResultView);
-		
+
+		// for push
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		final String regId = GCMRegistrar.getRegistrationId(this);
+		if("".equals(regId))
+		      GCMRegistrar.register(this, "1003709731095");
+		else
+		      Log.d("==============", regId);
+
 		
 		// Button Action
 		loginBtn.setOnClickListener(new OnClickListener() {
@@ -62,6 +72,8 @@ public class LoginActivity extends Activity {
 				params.add(new BasicNameValuePair("action", "login"));
 				params.add(new BasicNameValuePair("userid", manageridEdit.getText().toString()));
 				params.add(new BasicNameValuePair("password", passwordEdit.getText().toString()));
+				params.add(new BasicNameValuePair("token", regId));
+				params.add(new BasicNameValuePair("device", "android"));
 				
 				postTask = new PostRequest();
 				postTask.execute(params);
@@ -116,6 +128,8 @@ public class LoginActivity extends Activity {
 					cookieManager.setAcceptCookie(true);
 					Log.e("cookie test : ", cookieString);
 				}
+				
+
 				finish();
     		} else { // 로그인 실패시
     			passwordEdit.setText("");

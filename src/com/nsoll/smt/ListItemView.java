@@ -1,7 +1,6 @@
 package com.nsoll.smt;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
