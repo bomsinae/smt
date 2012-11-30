@@ -36,6 +36,7 @@ public final class R {
         public static final int managersetSave=0x7f07000f;
         public static final int managersetSubject=0x7f07000e;
         public static final int menu_login=0x7f070020;
+        public static final int menu_logout=0x7f070021;
         public static final int monitorLog=0x7f070011;
         public static final int msgView=0x7f07001b;
         public static final int nameView=0x7f070016;
@@ -77,6 +78,7 @@ public final class R {
         public static final int manager_set=0x7f04000a;
         public static final int managerid=0x7f04000c;
         public static final int menu_login=0x7f040002;
+        public static final int menu_logout=0x7f04000f;
         public static final int monitor_log=0x7f040006;
         public static final int password=0x7f04000d;
         public static final int save=0x7f040009;

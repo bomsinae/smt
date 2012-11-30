@@ -1,27 +1,16 @@
 package com.nsoll.smt;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.impl.cookie.BrowserCompatSpec;
-import org.apache.http.impl.cookie.CookieSpecBase;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,8 +24,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -44,20 +31,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ManagerSetActivity extends Activity {
+public class BackupOfManagerSetActivity extends Activity {
 	
-	public static final int REQUEST_CODE_ANOTHER = 1211;
 	Request task;
 	PostRequest postTask;
 	ListView list;
 	SetAdapter adapter = new SetAdapter(this);
-	public CookieManager cookieManager  = CookieManager.getInstance();
 
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
 			SetItem select_item = (SetItem) adapter.getItem(position);
-			Toast.makeText(ManagerSetActivity.this, select_item.getCheckname(), 1000).show();
+			Toast.makeText(BackupOfManagerSetActivity.this, select_item.getCheckname(), 1000).show();
 		}
 	};
 	
@@ -66,19 +51,21 @@ public class ManagerSetActivity extends Activity {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_managerset);
-
+        //StrictMode.enableDefaults();
+        Intent receivedIntent = getIntent();
+        final Integer no = receivedIntent.getIntExtra("no", 0);
+        final String name = receivedIntent.getStringExtra("name");
         final String domain = getString(R.string.domain);
+        String url = domain+"m/managerset.smt?no=" + Integer.toString(no);
         
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {
-        	list = (ListView)findViewById(R.id.managersetList);
-            task = new Request();
-            task.execute(domain+"/m/managerset.smt");	
-        }
-        
+        list = (ListView)findViewById(R.id.managersetList);
+        task = new Request();
+        task.execute(url);
+
+        // view subject
+        String subject = name + " Setting";
+        TextView subjectView = (TextView) findViewById(R.id.managersetSubject);
+        subjectView.setText(subject);
         
         // save button
         Button saveBtn = (Button) findViewById(R.id.managersetSave);        
@@ -92,6 +79,8 @@ public class ManagerSetActivity extends Activity {
 		        // action parameter
 		        params.add(new BasicNameValuePair("url", domain+"/m/managerset.smt"));
 		        params.add(new BasicNameValuePair("action", "onoff"));
+		        params.add(new BasicNameValuePair("no", Integer.toString(no)));
+		        params.add(new BasicNameValuePair("name", name));
 		        for(Integer i=0; i<itemCount; i++ ){
 		        	//Log.e("adapter seq", Integer.toString(i));
 		        	SetItem select_item = (SetItem) adapter.getItem(i);
@@ -110,97 +99,45 @@ public class ManagerSetActivity extends Activity {
         
         
     }
-    
-    @Override
-    public void onResume() {
-    	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} 
-    }
-    
+       
     class Request extends AsyncTask<String, Void, String> {
     	StringBuilder output = new StringBuilder();
-    	
     	@Override
     	protected String doInBackground(String... urlStr) {    	
-    		// cookie
-    		DefaultHttpClient client = new DefaultHttpClient();
-    		CookieSyncManager.createInstance(getApplicationContext());
-    		cookieManager = CookieManager.getInstance();
-    		CookieStore cookieStore = new BasicCookieStore();
-    		HttpContext localContext = new BasicHttpContext();
-    		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-    		String domain = getString(R.string.domain);
-    		String[] keyValueSets = CookieManager.getInstance().getCookie(domain).split(";");
-    		for(String cookie:keyValueSets)
-    		{
-    			String[] keyValue = cookie.split("=");
-    			String key = keyValue[0];
-    			String value = "";
-    			if(keyValue.length>1) value = keyValue[1];
-    			client.getCookieStore().addCookie(new BasicClientCookie(key, value));
-    			Log.v("cookie", "key:"+key+";value:"+value);
-    		}
         	try {
+        		HttpClient client = new DefaultHttpClient();
         		HttpGet get = new HttpGet(urlStr[0]);
-        		
-
-        		CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
-        		List<Cookie> cookies = client.getCookieStore().getCookies();
-        		List<?> cookieHeader = cookieSpecBase.formatCookies(cookies);
-        		get.setHeader((Header) cookieHeader.get(0));
-
-        	
-        		HttpResponse response = client.execute(get, localContext);
+        		HttpResponse response = client.execute(get);
         		HttpEntity resEntity = response.getEntity();
         		if(resEntity != null) {
         			output.append(EntityUtils.toString(resEntity));
         		}
-        		
-        		
         	} catch(Exception ex) {
         		Log.e("SmtHTTP", "Exception in processing response.", ex);
         	}        	      	
-            return output.toString();  			
+            return output.toString();    			
     	}
     	
  		@Override
- 		protected void onPostExecute(String result){
- 			Boolean b_result = null;
+    	protected void onPostExecute(String result){
     		try {
     			JSONObject jsonObject = new JSONObject(result);
-    			b_result = jsonObject.getBoolean("result");
-    			if (b_result) {
-					JSONArray jArr = new JSONArray(jsonObject.getString("check_list"));
-					for (Integer i=0; i<jArr.length(); i++){
-						JSONArray subjArr = new JSONArray(jArr.getString(i));
-						String name = subjArr.getString(0);
-						String keyname = subjArr.getString(1);
-						Boolean checked = subjArr.getBoolean(2);
-						adapter.add(new SetItem(name, keyname, checked));
-					}
-					
-			        // view subject
-					String name = jsonObject.getString("userid");
-			        String subject = name + " Setting";
-			        TextView subjectView = (TextView) findViewById(R.id.managersetSubject);
-			        subjectView.setText(subject);
-			        
-					list.setAdapter(adapter);
-		    		list.setOnItemClickListener(item_listener);
-				}
-    			else {
-    				Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    			}
+				JSONArray jArr = new JSONArray(jsonObject.getString("check_list"));
+				for (Integer i=0; i<jArr.length(); i++){
+					JSONArray subjArr = new JSONArray(jArr.getString(i));
+					String name = subjArr.getString(0);
+					String keyname = subjArr.getString(1);
+					Boolean checked = subjArr.getBoolean(2);
+					adapter.add(new SetItem(name, keyname, checked));
+				}		
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
     		
-    		
+    		list.setAdapter(adapter);
+    	//	list.setTextFilterEnabled(true);
+    		list.setOnItemClickListener(item_listener);
     	}
     }
         
@@ -208,38 +145,14 @@ public class ManagerSetActivity extends Activity {
     	StringBuilder output = new StringBuilder();
 		@Override
 		protected String doInBackground(ArrayList<BasicNameValuePair>... params) {
-			// cookie
-    		DefaultHttpClient client = new DefaultHttpClient();
-    		CookieSyncManager.createInstance(getApplicationContext());
-    		CookieStore cookieStore = new BasicCookieStore();
-    		HttpContext localContext = new BasicHttpContext();
-    		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-    		String domain = getString(R.string.domain);
-    		String[] keyValueSets = CookieManager.getInstance().getCookie(domain).split(";");
-    		for(String cookie:keyValueSets)
-    		{
-    			String[] keyValue = cookie.split("=");
-    			String key = keyValue[0];
-    			String value = "";
-    			if(keyValue.length>1) value = keyValue[1];
-    			client.getCookieStore().addCookie(new BasicClientCookie(key, value));
-    			Log.v("cookie", "key:"+key+";value:"+value);
-    		}
-    		
 			try {
-			    //get url and remove from params
+		        HttpClient client = new DefaultHttpClient();
+		        //get url and remove from params
 		        String postUrl = params[0].remove(0).getValue();
 		        HttpPost post = new HttpPost(postUrl);
-		        
-		        //
-		        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
-        		List<Cookie> cookies = client.getCookieStore().getCookies();
-        		List<?> cookieHeader = cookieSpecBase.formatCookies(cookies);
-        		post.setHeader((Header) cookieHeader.get(0));
-        		
 		        UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params[0], HTTP.UTF_8);
 		        post.setEntity(ent);
-		        HttpResponse responsePost = client.execute(post, localContext);
+		        HttpResponse responsePost = client.execute(post);
 		        HttpEntity resEntity = responsePost.getEntity();
 		        if(resEntity != null) {
 		        	output.append(EntityUtils.toString(resEntity));
@@ -268,7 +181,7 @@ public class ManagerSetActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-    		//Log.e("response", Boolean.toString(b_result));
+    		Log.e("response", Boolean.toString(b_result));
     		
     		Toast.makeText(getBaseContext(), response, 1000).show();
 			finish();

@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">SMT</string>
+    <string name="app_name">Nsoll Server Monitor</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_login">Login</string>
-    <string name="title_activity_main">smt</string>
+    <string name="title_activity_main">Nsoll Server Monitor</string>
     <string name="server_list">Server List</string>
     <string name="manager_list">Manager List</string>
     <string name="monitor_log">Monitor Log</string>
@@ -15,5 +15,6 @@
     <string name="managerid">Manager ID : </string>
     <string name="password">Password : </string>
     <string name="domain">http://smt.nsoll.com</string>
+    <string name="menu_logout">Logout</string>
 
 </resources>

@@ -33,7 +33,7 @@
         </activity>
         <activity android:name="ManagerListActivity" android:label="@string/manager_list"></activity>
         <activity android:name="MonitorLogActivity" android:label="@string/monitor_log"></activity>
-        <activity android:label="@string/server_set" android:name="AlertLogActivity"></activity>
+        <activity android:label="@string/alert_log" android:name="AlertLogActivity"></activity>
         <activity android:name="ServerSetActivity" android:label="@string/server_set"></activity>
         <activity android:label="@string/manager_set" android:name="ManagerSetActivity"></activity>
         <activity android:label="@string/login" android:name="LoginActivity"></activity>

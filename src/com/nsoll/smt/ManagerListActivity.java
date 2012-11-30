@@ -44,13 +44,14 @@ public class ManagerListActivity extends Activity {
 	
     public void onCreate(Bundle savedInstanceState) {
     	
+    	String domain = getString(R.string.domain);
     	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_managerlist);
         
         list = (ListView)findViewById(R.id.managerList);
         task = new Request();
-        task.execute("http://smt.nsoll.com/m/managerlist.smt");
+        task.execute(domain+"/m/managerlist.smt");
     }
     
     class Request extends AsyncTask<String, Void, String> {

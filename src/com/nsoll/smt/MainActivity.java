@@ -1,11 +1,16 @@
 package com.nsoll.smt;
 
+import com.nsoll.smt.ServerSetActivity.Request;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -15,7 +20,9 @@ public class MainActivity extends Activity {
 	public static final int REQUEST_CODE_ANOTHER = 1001;
 	ListView list;
 	MainMenuAdapter adapter = new MainMenuAdapter(this);
-	
+	public CookieManager cookieManager = CookieManager.getInstance();
+
+
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
@@ -26,6 +33,10 @@ public class MainActivity extends Activity {
 			} 
 			else if (select_item.getMenu() == "Manager List"){
 				Intent intent = new Intent(getBaseContext(), ManagerListActivity.class);
+	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+			}
+			else if (select_item.getMenu() == "Manager Setting"){
+				Intent intent = new Intent(getBaseContext(), ManagerSetActivity.class);
 	    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 			}
 			else if (select_item.getMenu() == "Monitor Log"){
@@ -46,18 +57,34 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         
         list = (ListView) findViewById(R.id.mainList);
-        
-        adapter.add(new MainItem(0xff8EC7D0, "Server List"));
-        adapter.add(new MainItem(0xff467F88, "Manager List"));
-        adapter.add(new MainItem(0xff8EC7D0, "Monitor Log"));
-        adapter.add(new MainItem(0xff467F88, "Alert Log"));
-        
-        list.setAdapter(adapter);
-        list.setTextFilterEnabled(true);
-		list.setOnItemClickListener(item_listener);
+     
+        if (cookieManager == null){
+        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+    	} else {
+	        adapter.add(new MainItem(0xff8EC7D0, "Server List"));
+	        //adapter.add(new MainItem(0xff467F88, "Manager List"));
+	        adapter.add(new MainItem(0xff467F88, "Manager Setting"));
+	        adapter.add(new MainItem(0xff8EC7D0, "Monitor Log"));
+	        adapter.add(new MainItem(0xff467F88, "Alert Log"));
+	        
+	        list.setAdapter(adapter);
+	        list.setTextFilterEnabled(true);
+			list.setOnItemClickListener(item_listener);
+    	}
 
     }
-
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+        if (cookieManager == null){
+        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+    		
+        }
+    }
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -71,7 +98,14 @@ public class MainActivity extends Activity {
     		Intent intent = new Intent(getBaseContext(), LoginActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
     		break;
-    	}
+    	case R.id.menu_logout:
+    		CookieSyncManager.createInstance(this);
+    		cookieManager = CookieManager.getInstance();
+    		cookieManager.removeAllCookie();
+    		Log.v("cookie", "delete");
+    		break;
+    	}    		
     	return super.onOptionsItemSelected(item);
     }
+    */
 }

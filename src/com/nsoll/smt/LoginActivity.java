@@ -59,7 +59,8 @@ public class LoginActivity extends Activity {
 		if("".equals(regId))
 		      GCMRegistrar.register(this, "1003709731095");
 		else
-		      Log.d("==============", regId);
+		      Log.d("regId " +
+		      		"===>>", regId);
 
 		
 		// Button Action
@@ -68,7 +69,8 @@ public class LoginActivity extends Activity {
 				
 				ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 				
-				params.add(new BasicNameValuePair("url", "http://smt.nsoll.com/m/login.smt"));
+				String domain = getString(R.string.domain);
+				params.add(new BasicNameValuePair("url", domain+"/m/login.smt"));
 				params.add(new BasicNameValuePair("action", "login"));
 				params.add(new BasicNameValuePair("userid", manageridEdit.getText().toString()));
 				params.add(new BasicNameValuePair("password", passwordEdit.getText().toString()));
