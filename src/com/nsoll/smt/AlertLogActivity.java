@@ -6,7 +6,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
@@ -22,14 +21,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.nsoll.smt.ServerSetActivity.Request;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.widget.ListView;
@@ -39,8 +35,8 @@ public class AlertLogActivity extends Activity{
 	public static final int REQUEST_CODE_ANOTHER = 1411;
 	Request task;
 	ListView list;
-	LogAdapter adapter = new LogAdapter(this);
-	public CookieManager cookieManager  = CookieManager.getInstance();
+	LogAdapter adapter;
+	public CookieManager cookieManager;
 	
 	/*
 	private OnItemClickListener item_listener = new OnItemClickListener() {
@@ -53,31 +49,31 @@ public class AlertLogActivity extends Activity{
 	*/
 	
     public void onCreate(Bundle savedInstanceState) {
-    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alertlog);
         
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {
-        	list = (ListView)findViewById(R.id.alertLog);
-            task = new Request();
-            String domain = getString(R.string.domain);
-            task.execute(domain+"/m/alertlog.smt");
-        }
         
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
         
     }
     
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+        if (CookieManager.getInstance().getCookie(domain) == null){
+        	Intent intent = new Intent(getBaseContext(), MainActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} 
+    		finish();
+        }else {
+        	adapter = new LogAdapter(this);
+        	list = (ListView)findViewById(R.id.alertLog);
+            task = new Request();
+            task.execute(domain+"/m/alertlog.smt");
+        }
     }
     
     class Request extends AsyncTask<String, Void, String> {
@@ -142,10 +138,13 @@ public class AlertLogActivity extends Activity{
 						
 						adapter.add(new LogItem(ip, logtime, msg));
 					}
-    			}
-    			list.setAdapter(adapter);
-        		//list.setTextFilterEnabled(true);
-        		//list.setOnItemClickListener(item_listener);
+					list.setAdapter(adapter);
+				}
+    			else {
+					Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		    		finish();
+    			} 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

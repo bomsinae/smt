@@ -39,9 +39,9 @@ public class ServerListActivity extends Activity {
 	public static final int REQUEST_CODE_ANOTHER = 1101;
 	Request task;
 	ListView list;
-	ListAdapter adapter = new ListAdapter(this);
-	public CookieManager cookieManager = CookieManager.getInstance();
-	
+	ListAdapter adapter;
+	public CookieManager cookieManager;
+		
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
@@ -53,31 +53,31 @@ public class ServerListActivity extends Activity {
 		}
 	};
 
-    public void onCreate(Bundle savedInstanceState) {
-    	
-    	
+    public void onCreate(Bundle savedInstanceState) {   	
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_serverlist);
-
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {     	
-	        list = (ListView)findViewById(R.id.serverList);
-	        task = new Request();
-	    	String domain = getString(R.string.domain);
-	        task.execute(domain+"/m/serverlist.smt");
-        }
+    
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
+        
     }
     
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);	
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+    	// 쿠키가 없다면 액티비티를 죽이고 로그인액티비티를 띄우자.
+    	if (CookieManager.getInstance().getCookie(domain) == null){
+        	Intent intent = new Intent(getBaseContext(), MainActivity.class);
+    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+    		finish();
+        } else {
+        	adapter = new ListAdapter(this);
+	        list = (ListView)findViewById(R.id.serverList);
+	        task = new Request();
+	        task.execute(domain+"/m/serverlist.smt");
         }
     }
 
@@ -89,6 +89,7 @@ public class ServerListActivity extends Activity {
     		// cookie
     		DefaultHttpClient client = new DefaultHttpClient();
     		CookieSyncManager.createInstance(getApplicationContext());
+    		cookieManager = CookieManager.getInstance();
     		CookieStore cookieStore = new BasicCookieStore();
     		HttpContext localContext = new BasicHttpContext();
     		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
@@ -137,11 +138,11 @@ public class ServerListActivity extends Activity {
     		try {
 				jsonObject = new JSONObject(result);
 				b_result = jsonObject.getBoolean("result");
-				
 				if (b_result) {
 					JSONArray jArr = new JSONArray(jsonObject.getString("server_list"));
 					for (int i=0; i < jArr.length(); i++) {
 						name = jArr.getJSONObject(i).getString("ip");
+						subname = jArr.getJSONObject(i).getString("name");
 						regdate = jArr.getJSONObject(i).getString("regdate");
 						adapter.add(new ListItem(no, name, subname, regdate));
 					}
@@ -150,8 +151,9 @@ public class ServerListActivity extends Activity {
 		    		list.setOnItemClickListener(item_listener);
 				}
 				else {
-					Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+					Intent intent = new Intent(getBaseContext(), MainActivity.class);
 		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		    		finish();
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

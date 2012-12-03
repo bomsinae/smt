@@ -50,34 +50,27 @@ public class ManagerSetActivity extends Activity {
 	Request task;
 	PostRequest postTask;
 	ListView list;
-	SetAdapter adapter = new SetAdapter(this);
-	public CookieManager cookieManager  = CookieManager.getInstance();
+	SetAdapter adapter;
+	public CookieManager cookieManager;
 
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
 			SetItem select_item = (SetItem) adapter.getItem(position);
-			Toast.makeText(ManagerSetActivity.this, select_item.getCheckname(), 1000).show();
+			//Toast.makeText(ManagerSetActivity.this, select_item.getCheckname(), 1000).show();
 		}
 	};
 	
     public void onCreate(Bundle savedInstanceState) {
-    	   	
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_managerset);
 
         final String domain = getString(R.string.domain);
         
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {
-        	list = (ListView)findViewById(R.id.managersetList);
-            task = new Request();
-            task.execute(domain+"/m/managerset.smt");	
-        }
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
+        
         
         
         // save button
@@ -114,10 +107,20 @@ public class ManagerSetActivity extends Activity {
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+    	// 쿠키가 없다면 액티비티를 죽이고 로그인액티비티를 띄우자.
+    	if (CookieManager.getInstance().getCookie(domain) == null){
+        	Intent intent = new Intent(getBaseContext(), MainActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} 
+    		finish();
+    		
+        } else {
+        	adapter = new SetAdapter(this);
+        	list = (ListView)findViewById(R.id.managersetList);
+            task = new Request();
+            task.execute(domain+"/m/managerset.smt");	
+        } 
     }
     
     class Request extends AsyncTask<String, Void, String> {
@@ -192,8 +195,9 @@ public class ManagerSetActivity extends Activity {
 		    		list.setOnItemClickListener(item_listener);
 				}
     			else {
-    				Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    				Intent intent = new Intent(getBaseContext(), MainActivity.class);
 		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		    		finish();
     			}
 				
 			} catch (JSONException e) {
@@ -211,6 +215,7 @@ public class ManagerSetActivity extends Activity {
 			// cookie
     		DefaultHttpClient client = new DefaultHttpClient();
     		CookieSyncManager.createInstance(getApplicationContext());
+    		cookieManager = CookieManager.getInstance();
     		CookieStore cookieStore = new BasicCookieStore();
     		HttpContext localContext = new BasicHttpContext();
     		localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);

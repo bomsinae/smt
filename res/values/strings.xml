@@ -16,5 +16,8 @@
     <string name="password">Password : </string>
     <string name="domain">http://smt.nsoll.com</string>
     <string name="menu_logout">Logout</string>
+    <string name="logout_msg">NSOLL Server Monitor를 종료하시겠습니까?</string>
+    <string name="button_yes">예</string>
+    <string name="button_no">아니오</string>
 
 </resources>

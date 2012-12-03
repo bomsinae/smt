@@ -36,8 +36,8 @@ public class MonitorLogActivity extends Activity{
 	public static final int REQUEST_CODE_ANOTHER = 1301;
 	Request task;
 	ListView list;
-	LogAdapter adapter = new LogAdapter(this);
-	public CookieManager cookieManager  = CookieManager.getInstance();
+	LogAdapter adapter;
+	public CookieManager cookieManager;
 	
 	/*
 	private OnItemClickListener item_listener = new OnItemClickListener() {
@@ -53,25 +53,28 @@ public class MonitorLogActivity extends Activity{
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitorlog);
         
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {
-	        list = (ListView)findViewById(R.id.monitorLog);
-	        task = new Request();
-	        String domain = getString(R.string.domain);
-	        task.execute(domain+"/m/monitorlog.smt");
-        }
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
+
+
     }
 
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+    	// 쿠키가 없다면 액티비티를 죽이고 로그인액티비티를 띄우자.
+        if (CookieManager.getInstance().getCookie(domain) == null){
+        	Intent intent = new Intent(getBaseContext(), MainActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} 
+    		finish();
+        }else {
+        	adapter = new LogAdapter(this);
+	        list = (ListView)findViewById(R.id.monitorLog);
+	        task = new Request();
+	        task.execute(domain+"/m/monitorlog.smt");
+        }
     }
     
     class Request extends AsyncTask<String, Void, String> {
@@ -138,8 +141,9 @@ public class MonitorLogActivity extends Activity{
 					}
 				}
 				else {
-    				Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    				Intent intent = new Intent(getBaseContext(), MainActivity.class);
 		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		    		finish();
     			}
 				
 			} catch (JSONException e) {

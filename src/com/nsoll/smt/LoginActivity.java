@@ -17,9 +17,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.CookieManager;
@@ -84,6 +87,33 @@ public class LoginActivity extends Activity {
 		
 		
 	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		switch(keyCode){
+	    	case KeyEvent.KEYCODE_BACK:
+	    	String alertTitle = getResources().getString(R.string.app_name);
+	    	String buttonMessage = getResources().getString(R.string.logout_msg);
+	    	String buttonYes = getResources().getString(R.string.button_yes);
+	    	String buttonNo = getResources().getString(R.string.button_no);
+	         
+	    	new AlertDialog.Builder(this)
+	    	.setTitle(alertTitle)
+	    	.setMessage(buttonMessage)
+	    	.setPositiveButton(buttonYes, new DialogInterface.OnClickListener() {
+	       
+	    		public void onClick(DialogInterface dialog, int which) {
+	    		// TODO Auto-generated method stub
+	    			moveTaskToBack(true);
+	    			finish();
+	    		}
+	    	})
+	    	.setNegativeButton(buttonNo, null)
+	    	.show();
+	    }
+	    return true;
+	}
+
+
 
 	class PostRequest extends AsyncTask<ArrayList<BasicNameValuePair>, Void, String> {
     	StringBuilder output = new StringBuilder();

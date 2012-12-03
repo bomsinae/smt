@@ -1,13 +1,9 @@
 package com.nsoll.smt;
 
-import com.nsoll.smt.ServerSetActivity.Request;
-
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -58,31 +54,32 @@ public class MainActivity extends Activity {
         
         list = (ListView) findViewById(R.id.mainList);
      
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} else {
-	        adapter.add(new MainItem(0xff8EC7D0, "Server List"));
-	        //adapter.add(new MainItem(0xff467F88, "Manager List"));
-	        adapter.add(new MainItem(0xff467F88, "Manager Setting"));
-	        adapter.add(new MainItem(0xff8EC7D0, "Monitor Log"));
-	        adapter.add(new MainItem(0xff467F88, "Alert Log"));
-	        
-	        list.setAdapter(adapter);
-	        list.setTextFilterEnabled(true);
-			list.setOnItemClickListener(item_listener);
-    	}
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
+
+        adapter.add(new MainItem(0xff8EC7D0, "Server List"));
+        //adapter.add(new MainItem(0xff467F88, "Manager List"));
+        adapter.add(new MainItem(0xff467F88, "Manager Setting"));
+        adapter.add(new MainItem(0xff8EC7D0, "Monitor Log"));
+        adapter.add(new MainItem(0xff467F88, "Alert Log"));
+        
+        list.setAdapter(adapter);
+        list.setTextFilterEnabled(true);
+		list.setOnItemClickListener(item_listener);
 
     }
     
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+        if (CookieManager.getInstance().getCookie(domain) == null){
         	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        }
+    	}
+
+        
     }
     /*
     @Override

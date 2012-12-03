@@ -48,10 +48,9 @@ public class ServerSetActivity extends Activity {
 	Request task;
 	PostRequest postTask;
 	ListView list;
-	SetAdapter adapter = new SetAdapter(this);
-	public CookieManager cookieManager  = CookieManager.getInstance();
+	SetAdapter adapter;
+	public CookieManager cookieManager;
 		
-
 	//항목별 세부 설정 확장용.
 	private OnItemClickListener item_listener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -60,35 +59,18 @@ public class ServerSetActivity extends Activity {
 			//Toast.makeText(ServerSetActivity.this, select_item.getCheckname(), 1000).show();
 		}
 	};
-	
-	
-	
+		
     public void onCreate(Bundle savedInstanceState) {
-    	   	
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_serverset);
+
+        CookieSyncManager.createInstance(this);
+    	cookieManager = CookieManager.getInstance();
         
         Intent receivedIntent = getIntent();
         final String ip = receivedIntent.getStringExtra("ip");
         final String domain = getString(R.string.domain);
-
-        //
-        String subject = ip + " Setting";
-        TextView subjectView = (TextView) findViewById(R.id.serversetSubject);
-        subjectView.setText(subject);
-        
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    		
-        } else {
-        	
-            list = (ListView)findViewById(R.id.serversetList);
-            task = new Request();
-            String url = domain+"/m/serverset.smt?ip=" + ip;
-            task.execute(url);
-        }
         
      // save button
         Button saveBtn = (Button) findViewById(R.id.serversetSave);        
@@ -124,10 +106,28 @@ public class ServerSetActivity extends Activity {
     @Override
     public void onResume() {
     	super.onResume();
-        if (cookieManager == null){
-        	Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    	CookieSyncManager.getInstance().startSync();
+    	String domain = getString(R.string.domain);
+        
+    	Intent receivedIntent = getIntent();
+    	String ip = receivedIntent.getStringExtra("ip");
+
+        String subject = ip + " Setting";
+        TextView subjectView = (TextView) findViewById(R.id.serversetSubject);
+        subjectView.setText(subject);
+        
+        // 쿠키가 없다면 액티비티를 죽이고 로그인액티비티를 띄우자.
+    	if (CookieManager.getInstance().getCookie(domain) == null){
+        	Intent intent = new Intent(getBaseContext(), MainActivity.class);
     		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
-    	} 
+    		finish();
+        } else {
+        	adapter = new SetAdapter(this);	
+            list = (ListView)findViewById(R.id.serversetList);
+            task = new Request();
+            String url = domain+"/m/serverset.smt?ip=" + ip;
+            task.execute(url);
+        }
     }
     
     class Request extends AsyncTask<String, Void, String> {
@@ -195,8 +195,9 @@ public class ServerSetActivity extends Activity {
 		    		list.setOnItemClickListener(item_listener);
 				}
     			else {
-    				Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+    				Intent intent = new Intent(getBaseContext(), MainActivity.class);
 		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
+		    		finish();
     			}
 				
 				//adapter.add(new SetItem("Ping", "ping_check", json_checkList.getBoolean("ping_check")));

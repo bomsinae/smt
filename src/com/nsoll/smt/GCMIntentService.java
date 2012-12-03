@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Vibrator;
 import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
@@ -60,9 +59,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 		try {
 			String title = intent.getStringExtra("title");
 			String message = intent.getStringExtra("msg");
-			Vibrator vibrator = 
-			 (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-			vibrator.vibrate(1000);
+			//Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+			//vibrator.vibrate(1000);
 			setNotification(context, title, message);
 			if (BuildConfig.DEBUG)
 				Log.d(tag, title + ":" + message);
@@ -80,9 +78,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 					.getSystemService(Context.NOTIFICATION_SERVICE);
 			notification = new Notification(R.drawable.ic_launcher,
 					message, System.currentTimeMillis());
-			Intent intent = new Intent(context, MainActivity.class);
+			
+			//노티바 지우기
+			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			//사운드
+			notification.defaults |= Notification.DEFAULT_SOUND;
+			//소리
+			notification.defaults |= Notification.DEFAULT_VIBRATE;
+
+			Intent intent = new Intent(context, AlertLogActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
 			notification.setLatestEventInfo(context, title, message, pi);
+			
 			notificationManager.notify(0, notification);
 		} catch (Exception e) {
 			Log.e(tag, "[setNotification] Exception : " + e.getMessage());
