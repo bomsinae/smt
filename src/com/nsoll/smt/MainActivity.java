@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -16,7 +17,7 @@ public class MainActivity extends Activity {
 	public static final int REQUEST_CODE_ANOTHER = 1001;
 	ListView list;
 	MainMenuAdapter adapter = new MainMenuAdapter(this);
-	public CookieManager cookieManager = CookieManager.getInstance();
+	public CookieManager cookieManager;
 
 
 	private OnItemClickListener item_listener = new OnItemClickListener() {
@@ -66,12 +67,15 @@ public class MainActivity extends Activity {
         list.setAdapter(adapter);
         list.setTextFilterEnabled(true);
 		list.setOnItemClickListener(item_listener);
+		Log.v("create", "--");
 
     }
     
     @Override
     public void onResume() {
     	super.onResume();
+    	
+    	Log.v("resume", "---");
     	CookieSyncManager.getInstance().startSync();
     	String domain = getString(R.string.domain);
         if (CookieManager.getInstance().getCookie(domain) == null){

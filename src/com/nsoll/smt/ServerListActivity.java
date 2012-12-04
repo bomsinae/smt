@@ -151,7 +151,8 @@ public class ServerListActivity extends Activity {
 		    		list.setOnItemClickListener(item_listener);
 				}
 				else {
-					Intent intent = new Intent(getBaseContext(), MainActivity.class);
+					// 서버로부터 false 받으면 로그인 다시 해라
+					Intent intent = new Intent(getBaseContext(), LoginActivity.class);
 		    		startActivityForResult(intent, REQUEST_CODE_ANOTHER);
 		    		finish();
 				}

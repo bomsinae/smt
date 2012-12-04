@@ -62,14 +62,14 @@ public class LoginActivity extends Activity {
 		if("".equals(regId))
 		      GCMRegistrar.register(this, "1003709731095");
 		else
-		      Log.d("regId " +
-		      		"===>>", regId);
-
+		      Log.d("regId ===>>", regId);
+		
 		
 		// Button Action
 		loginBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				
+				//토근 가져오기
+				final String token = GCMRegistrar.getRegistrationId(getApplicationContext());
 				ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 				
 				String domain = getString(R.string.domain);
@@ -77,8 +77,9 @@ public class LoginActivity extends Activity {
 				params.add(new BasicNameValuePair("action", "login"));
 				params.add(new BasicNameValuePair("userid", manageridEdit.getText().toString()));
 				params.add(new BasicNameValuePair("password", passwordEdit.getText().toString()));
-				params.add(new BasicNameValuePair("token", regId));
+				params.add(new BasicNameValuePair("token", token));
 				params.add(new BasicNameValuePair("device", "android"));
+				Log.v("token ===>>", token);
 				
 				postTask = new PostRequest();
 				postTask.execute(params);
@@ -88,6 +89,7 @@ public class LoginActivity extends Activity {
 		
 	}
 
+	// 로그인화면에서 백버튼 누르면 종료할지 물어본다.
 	public boolean onKeyDown(int keyCode, KeyEvent event){
 		switch(keyCode){
 	    	case KeyEvent.KEYCODE_BACK:
